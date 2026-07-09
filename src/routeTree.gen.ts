@@ -9,8 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OverOnsRouteImport } from './routes/over-ons'
+import { Route as KaasRouteImport } from './routes/kaas'
+import { Route as DelicatessenRouteImport } from './routes/delicatessen'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BroodjesRouteImport } from './routes/broodjes'
+import { Route as BorrelplankenRouteImport } from './routes/borrelplanken'
 import { Route as IndexRouteImport } from './routes/index'
 
+const OverOnsRoute = OverOnsRouteImport.update({
+  id: '/over-ons',
+  path: '/over-ons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KaasRoute = KaasRouteImport.update({
+  id: '/kaas',
+  path: '/kaas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DelicatessenRoute = DelicatessenRouteImport.update({
+  id: '/delicatessen',
+  path: '/delicatessen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BroodjesRoute = BroodjesRouteImport.update({
+  id: '/broodjes',
+  path: '/broodjes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BorrelplankenRoute = BorrelplankenRouteImport.update({
+  id: '/borrelplanken',
+  path: '/borrelplanken',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +55,116 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/borrelplanken': typeof BorrelplankenRoute
+  '/broodjes': typeof BroodjesRoute
+  '/contact': typeof ContactRoute
+  '/delicatessen': typeof DelicatessenRoute
+  '/kaas': typeof KaasRoute
+  '/over-ons': typeof OverOnsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/borrelplanken': typeof BorrelplankenRoute
+  '/broodjes': typeof BroodjesRoute
+  '/contact': typeof ContactRoute
+  '/delicatessen': typeof DelicatessenRoute
+  '/kaas': typeof KaasRoute
+  '/over-ons': typeof OverOnsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/borrelplanken': typeof BorrelplankenRoute
+  '/broodjes': typeof BroodjesRoute
+  '/contact': typeof ContactRoute
+  '/delicatessen': typeof DelicatessenRoute
+  '/kaas': typeof KaasRoute
+  '/over-ons': typeof OverOnsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/borrelplanken'
+    | '/broodjes'
+    | '/contact'
+    | '/delicatessen'
+    | '/kaas'
+    | '/over-ons'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/borrelplanken'
+    | '/broodjes'
+    | '/contact'
+    | '/delicatessen'
+    | '/kaas'
+    | '/over-ons'
+  id:
+    | '__root__'
+    | '/'
+    | '/borrelplanken'
+    | '/broodjes'
+    | '/contact'
+    | '/delicatessen'
+    | '/kaas'
+    | '/over-ons'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BorrelplankenRoute: typeof BorrelplankenRoute
+  BroodjesRoute: typeof BroodjesRoute
+  ContactRoute: typeof ContactRoute
+  DelicatessenRoute: typeof DelicatessenRoute
+  KaasRoute: typeof KaasRoute
+  OverOnsRoute: typeof OverOnsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/over-ons': {
+      id: '/over-ons'
+      path: '/over-ons'
+      fullPath: '/over-ons'
+      preLoaderRoute: typeof OverOnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kaas': {
+      id: '/kaas'
+      path: '/kaas'
+      fullPath: '/kaas'
+      preLoaderRoute: typeof KaasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delicatessen': {
+      id: '/delicatessen'
+      path: '/delicatessen'
+      fullPath: '/delicatessen'
+      preLoaderRoute: typeof DelicatessenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/broodjes': {
+      id: '/broodjes'
+      path: '/broodjes'
+      fullPath: '/broodjes'
+      preLoaderRoute: typeof BroodjesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/borrelplanken': {
+      id: '/borrelplanken'
+      path: '/borrelplanken'
+      fullPath: '/borrelplanken'
+      preLoaderRoute: typeof BorrelplankenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BorrelplankenRoute: BorrelplankenRoute,
+  BroodjesRoute: BroodjesRoute,
+  ContactRoute: ContactRoute,
+  DelicatessenRoute: DelicatessenRoute,
+  KaasRoute: KaasRoute,
+  OverOnsRoute: OverOnsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
