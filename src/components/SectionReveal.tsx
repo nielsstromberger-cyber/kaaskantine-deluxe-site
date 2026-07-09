@@ -3,12 +3,11 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 type Props = {
   children: ReactNode;
   className?: string;
-  as?: keyof React.JSX.IntrinsicElements;
   delay?: number;
 };
 
-export function SectionReveal({ children, className = "", as = "div", delay = 0 }: Props) {
-  const ref = useRef<HTMLElement | null>(null);
+export function SectionReveal({ children, className = "", delay = 0 }: Props) {
+  const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -34,14 +33,9 @@ export function SectionReveal({ children, className = "", as = "div", delay = 0 
     return () => io.disconnect();
   }, [delay]);
 
-  const Tag = as as string;
   return (
-    // biome-ignore lint: dynamic tag
-    <Tag
-      ref={ref as never}
-      className={`reveal ${visible ? "is-visible" : ""} ${className}`.trim()}
-    >
+    <div ref={ref} className={`reveal ${visible ? "is-visible" : ""} ${className}`.trim()}>
       {children}
-    </Tag>
+    </div>
   );
 }
