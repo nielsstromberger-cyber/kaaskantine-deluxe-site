@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import staff from "../assets/staff.jpg";
-import shop from "../assets/shop-interior.jpg";
+import staffAsset from "../assets/kaaskantine-sign.jpg.asset.json";
+import shopAsset from "../assets/kaaskantine-storefront.jpg.asset.json";
+const staff = staffAsset.url;
+const shop = shopAsset.url;
 import alkmaar from "../assets/alkmaar-street.jpg";
 
 export const Route = createFileRoute("/over-ons")({
