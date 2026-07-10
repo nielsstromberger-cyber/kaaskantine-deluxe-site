@@ -75,7 +75,7 @@ export function Footer() {
             Volg ons
           </h3>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/dekaaskantine?igsh=MWZvNGlta29ucWhjbg=="
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
