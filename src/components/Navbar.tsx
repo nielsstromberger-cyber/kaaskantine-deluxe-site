@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
+import logo from "../assets/logo.jpg";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -34,12 +35,11 @@ export function Navbar() {
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2 group" aria-label="De Kaaskantine home">
-          <span
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground font-display text-lg font-semibold shadow-sm transition-transform group-hover:scale-105"
-            aria-hidden="true"
-          >
-            K
-          </span>
+          <img
+            src={logo}
+            alt="De Kaaskantine logo"
+            className="h-10 w-10 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-border transition-transform group-hover:scale-105"
+          />
           <span className="font-display text-lg font-semibold tracking-tight text-primary sm:text-xl">
             De Kaaskantine
           </span>
