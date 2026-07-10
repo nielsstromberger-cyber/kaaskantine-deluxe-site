@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import deli from "../assets/delicatessen.jpg";
+import deliAsset from "../assets/fines-de-claire.jpg.asset.json";
+const deli = deliAsset.url;
 import meat from "../assets/vleeswaren.jpg";
 
 export const Route = createFileRoute("/delicatessen")({

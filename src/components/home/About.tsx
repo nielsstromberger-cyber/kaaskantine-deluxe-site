@@ -1,4 +1,5 @@
-import staffImg from "../../assets/staff.jpg";
+import staffAsset from "../../assets/kaaskantine-storefront.jpg.asset.json";
+const staffImg = staffAsset.url;
 import { SectionReveal } from "../SectionReveal";
 
 export function About() {

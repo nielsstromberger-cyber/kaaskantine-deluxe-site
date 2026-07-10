@@ -1,13 +1,16 @@
 import { SectionReveal } from "../SectionReveal";
+import shopAsset from "../../assets/kaaskantine-sign.jpg.asset.json";
+import deliAsset from "../../assets/fines-de-claire.jpg.asset.json";
+import alkmaarAsset from "../../assets/kaaskantine-storefront.jpg.asset.json";
+const shop = shopAsset.url;
+const deli = deliAsset.url;
+const alkmaar = alkmaarAsset.url;
+import board from "../../assets/charcuterie-board.jpg";
 import sandwich from "../../assets/fresh-sandwich.jpg";
 import cheese from "../../assets/cheese-wheels.jpg";
-import board from "../../assets/charcuterie-board.jpg";
-import shop from "../../assets/shop-interior.jpg";
-import deli from "../../assets/delicatessen.jpg";
 import customers from "../../assets/gallery-3.jpg";
 import g1 from "../../assets/gallery-1.jpg";
 import g2 from "../../assets/gallery-2.jpg";
-import alkmaar from "../../assets/alkmaar-street.jpg";
 
 const IMAGES = [
   { src: sandwich, alt: "Vers belegd broodje" },
