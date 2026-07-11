@@ -17,6 +17,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BroodjesRouteImport } from './routes/broodjes'
 import { Route as BorrelplankenRouteImport } from './routes/borrelplanken'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BestellingIdRouteImport } from './routes/bestelling.$id'
 
@@ -60,6 +61,11 @@ const BorrelplankenRoute = BorrelplankenRouteImport.update({
   path: '/borrelplanken',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -73,6 +79,7 @@ const BestellingIdRoute = BestellingIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/borrelplanken': typeof BorrelplankenRoute
   '/broodjes': typeof BroodjesRoute
   '/checkout': typeof CheckoutRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/borrelplanken': typeof BorrelplankenRoute
   '/broodjes': typeof BroodjesRoute
   '/checkout': typeof CheckoutRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/borrelplanken': typeof BorrelplankenRoute
   '/broodjes': typeof BroodjesRoute
   '/checkout': typeof CheckoutRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/borrelplanken'
     | '/broodjes'
     | '/checkout'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/borrelplanken'
     | '/broodjes'
     | '/checkout'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/borrelplanken'
     | '/broodjes'
     | '/checkout'
@@ -149,6 +161,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   BorrelplankenRoute: typeof BorrelplankenRoute
   BroodjesRoute: typeof BroodjesRoute
   CheckoutRoute: typeof CheckoutRoute
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BorrelplankenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -237,6 +257,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   BorrelplankenRoute: BorrelplankenRoute,
   BroodjesRoute: BroodjesRoute,
   CheckoutRoute: CheckoutRoute,
