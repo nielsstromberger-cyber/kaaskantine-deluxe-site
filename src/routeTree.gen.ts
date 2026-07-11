@@ -10,16 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OverOnsRouteImport } from './routes/over-ons'
+import { Route as MenuRouteImport } from './routes/menu'
 import { Route as KaasRouteImport } from './routes/kaas'
 import { Route as DelicatessenRouteImport } from './routes/delicatessen'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BroodjesRouteImport } from './routes/broodjes'
 import { Route as BorrelplankenRouteImport } from './routes/borrelplanken'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BestellingIdRouteImport } from './routes/bestelling.$id'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const OverOnsRoute = OverOnsRouteImport.update({
   id: '/over-ons',
   path: '/over-ons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KaasRoute = KaasRouteImport.update({
@@ -37,6 +48,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BroodjesRoute = BroodjesRouteImport.update({
   id: '/broodjes',
   path: '/broodjes',
@@ -47,78 +63,134 @@ const BorrelplankenRoute = BorrelplankenRouteImport.update({
   path: '/borrelplanken',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BestellingIdRoute = BestellingIdRouteImport.update({
+  id: '/bestelling/$id',
+  path: '/bestelling/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/borrelplanken': typeof BorrelplankenRoute
   '/broodjes': typeof BroodjesRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/delicatessen': typeof DelicatessenRoute
   '/kaas': typeof KaasRoute
+  '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/bestelling/$id': typeof BestellingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/borrelplanken': typeof BorrelplankenRoute
   '/broodjes': typeof BroodjesRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/delicatessen': typeof DelicatessenRoute
   '/kaas': typeof KaasRoute
+  '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/bestelling/$id': typeof BestellingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/borrelplanken': typeof BorrelplankenRoute
   '/broodjes': typeof BroodjesRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/delicatessen': typeof DelicatessenRoute
   '/kaas': typeof KaasRoute
+  '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/bestelling/$id': typeof BestellingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/borrelplanken'
     | '/broodjes'
+    | '/checkout'
     | '/contact'
     | '/delicatessen'
     | '/kaas'
+    | '/menu'
     | '/over-ons'
+    | '/admin'
+    | '/bestelling/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/borrelplanken'
     | '/broodjes'
+    | '/checkout'
     | '/contact'
     | '/delicatessen'
     | '/kaas'
+    | '/menu'
     | '/over-ons'
+    | '/admin'
+    | '/bestelling/$id'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/borrelplanken'
     | '/broodjes'
+    | '/checkout'
     | '/contact'
     | '/delicatessen'
     | '/kaas'
+    | '/menu'
     | '/over-ons'
+    | '/_authenticated/admin'
+    | '/bestelling/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   BorrelplankenRoute: typeof BorrelplankenRoute
   BroodjesRoute: typeof BroodjesRoute
+  CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   DelicatessenRoute: typeof DelicatessenRoute
   KaasRoute: typeof KaasRoute
+  MenuRoute: typeof MenuRoute
   OverOnsRoute: typeof OverOnsRoute
+  BestellingIdRoute: typeof BestellingIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -128,6 +200,13 @@ declare module '@tanstack/react-router' {
       path: '/over-ons'
       fullPath: '/over-ons'
       preLoaderRoute: typeof OverOnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kaas': {
@@ -151,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/broodjes': {
       id: '/broodjes'
       path: '/broodjes'
@@ -165,6 +251,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BorrelplankenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -172,28 +272,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bestelling/$id': {
+      id: '/bestelling/$id'
+      path: '/bestelling/$id'
+      fullPath: '/bestelling/$id'
+      preLoaderRoute: typeof BestellingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   BorrelplankenRoute: BorrelplankenRoute,
   BroodjesRoute: BroodjesRoute,
+  CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   DelicatessenRoute: DelicatessenRoute,
   KaasRoute: KaasRoute,
+  MenuRoute: MenuRoute,
   OverOnsRoute: OverOnsRoute,
+  BestellingIdRoute: BestellingIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
