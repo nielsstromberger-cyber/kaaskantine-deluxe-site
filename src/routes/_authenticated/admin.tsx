@@ -179,7 +179,7 @@ function OrderCard({
   onStatusChange,
 }: {
   order: OrderRow;
-  onStatusChange: (status: string) => void;
+  onStatusChange: (status: OrderStatus) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const { data: items } = useQuery({
