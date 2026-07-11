@@ -64,11 +64,13 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <Link
-            to="/contact"
+            to="/menu"
             className="hidden rounded-full bg-[var(--brand-gold)] px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:bg-[var(--brand-gold-soft)] sm:inline-flex"
           >
             Bestellen
           </Link>
+
+          <CartDrawer />
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
