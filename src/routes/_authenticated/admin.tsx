@@ -75,7 +75,7 @@ function AdminDashboard() {
   }, [qc]);
 
   const updateStatus = useMutation({
-    mutationFn: async (vars: { id: string; status: string }) => {
+    mutationFn: async (vars: { id: string; status: OrderStatus }) => {
       const { error } = await supabase
         .from("orders")
         .update({ status: vars.status })
