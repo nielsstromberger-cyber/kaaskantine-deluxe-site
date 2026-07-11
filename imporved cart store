@@ -1,0 +1,255 @@
+// Improved version of src/lib/cart-store.ts
+import { create } from "zustand";
+import { persist, subscribeWithSelector } from "zustand/middleware";
+
+/**
+ * Represents a single item in the shopping cart
+ */
+export type CartItem = {
+  productId: string;
+  name: string;
+  priceCents: number;
+  quantity: number;
+  notes?: string;
+  category?: string;
+};
+
+/**
+ * Payload for adding items to cart (without quantity)
+ */
+export type AddItemPayload = Omit<CartItem, "quantity">;
+
+/**
+ * Complete state and actions for the cart
+ */
+type CartState = {
+  // State
+  items: CartItem[];
+  lastAddedProductId: string | null;
+
+  // Actions
+  add: (item: AddItemPayload, qty?: number) => void;
+  remove: (productId: string) => void;
+  setQuantity: (productId: string, qty: number) => void;
+  updateItem: (productId: string, updates: Partial<CartItem>) => void;
+  clear: () => void;
+
+  // Computed properties
+  subtotalCents: () => number;
+  count: () => number;
+  isEmpty: () => boolean;
+  getItem: (productId: string) => CartItem | undefined;
+  getTotalItems: () => CartItem[];
+};
+
+/**
+ * Zustand cart store with persistence
+ * Uses subscribeWithSelector middleware for better performance
+ */
+export const useCart = create<CartState>()(
+  persist(
+    subscribeWithSelector((set, get) => ({
+      items: [],
+      lastAddedProductId: null,
+
+      /**
+       * Add item to cart or increment quantity if exists
+       */
+      add: (item: AddItemPayload, qty = 1) => {
+        // Validation
+        if (qty < 1) {
+          console.warn("Quantity must be at least 1, ignoring add");
+          return;
+        }
+        if (!item.productId) {
+          console.error("Product ID is required");
+          return;
+        }
+        if (item.priceCents < 0) {
+          console.error("Price cannot be negative");
+          return;
+        }
+
+        set((state) => {
+          const existing = state.items.find((i) => i.productId === item.productId);
+
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                i.productId === item.productId
+                  ? { ...i, quantity: i.quantity + qty }
+                  : i,
+              ),
+              lastAddedProductId: item.productId,
+            };
+          }
+
+          return {
+            items: [...state.items, { ...item, quantity: qty }],
+            lastAddedProductId: item.productId,
+          };
+        });
+      },
+
+      /**
+       * Remove item from cart
+       */
+      remove: (productId: string) => {
+        set((state) => ({
+          items: state.items.filter((i) => i.productId !== productId),
+        }));
+      },
+
+      /**
+       * Set quantity of item (0 removes it)
+       */
+      setQuantity: (productId: string, qty: number) => {
+        if (qty < 0) {
+          console.warn("Quantity cannot be negative");
+          return;
+        }
+
+        set((state) => {
+          if (qty === 0) {
+            return {
+              items: state.items.filter((i) => i.productId !== productId),
+            };
+          }
+
+          return {
+            items: state.items.map((i) =>
+              i.productId === productId ? { ...i, quantity: qty } : i,
+            ),
+          };
+        });
+      },
+
+      /**
+       * Update specific fields of an item
+       */
+      updateItem: (productId: string, updates: Partial<CartItem>) => {
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.productId === productId ? { ...i, ...updates } : i,
+          ),
+        }));
+      },
+
+      /**
+       * Clear entire cart
+       */
+      clear: () => {
+        set({ items: [], lastAddedProductId: null });
+      },
+
+      /**
+       * Calculate cart subtotal in cents
+       */
+      subtotalCents: () => {
+        return get().items.reduce(
+          (sum, item) => sum + item.priceCents * item.quantity,
+          0,
+        );
+      },
+
+      /**
+       * Get total number of items (summed quantity)
+       */
+      count: () => {
+        return get().items.reduce((sum, item) => sum + item.quantity, 0);
+      },
+
+      /**
+       * Check if cart is empty
+       */
+      isEmpty: () => {
+        return get().items.length === 0;
+      },
+
+      /**
+       * Get specific item by product ID
+       */
+      getItem: (productId: string) => {
+        return get().items.find((i) => i.productId === productId);
+      },
+
+      /**
+       * Get all items in cart
+       */
+      getTotalItems: () => {
+        return [...get().items];
+      },
+    })),
+    {
+      name: "kaaskantine-cart-v1",
+      version: 1,
+      // Optional: migrate data if structure changes
+      migrate: (state: any, version: number) => {
+        if (version === 0) {
+          // Handle migration from v0 to v1
+          return state;
+        }
+        return state;
+      },
+    },
+  ),
+);
+
+/**
+ * Format cents as EUR currency string
+ * @param cents Amount in cents (e.g., 1000 = €10.00)
+ * @returns Formatted string (e.g., "€10,00")
+ */
+export const formatEUR = (cents: number): string => {
+  try {
+    return new Intl.NumberFormat("nl-NL", {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(cents / 100);
+  } catch (error) {
+    console.error("Error formatting currency:", error);
+    return `€${(cents / 100).toFixed(2)}`;
+  }
+};
+
+/**
+ * Calculate tax on amount (default 21% Dutch VAT)
+ */
+export const calculateTax = (amountCents: number, taxRate: number = 0.21): number => {
+  return Math.round(amountCents * taxRate);
+};
+
+/**
+ * Calculate total with tax
+ */
+export const calculateTotal = (
+  subtotalCents: number,
+  shippingCents: number = 0,
+  taxRate: number = 0.21,
+): { subtotal: number; tax: number; shipping: number; total: number } => {
+  const tax = calculateTax(subtotalCents, taxRate);
+  const total = subtotalCents + tax + shippingCents;
+
+  return {
+    subtotal: subtotalCents,
+    tax,
+    shipping: shippingCents,
+    total,
+  };
+};
+
+/**
+ * Selectors for better performance with Zustand
+ * Use these to avoid unnecessary re-renders
+ */
+export const cartSelectors = {
+  selectItems: (state: CartState) => state.items,
+  selectItemCount: (state: CartState) => state.count(),
+  selectSubtotal: (state: CartState) => state.subtotalCents(),
+  selectIsEmpty: (state: CartState) => state.isEmpty(),
+  selectLastAdded: (state: CartState) => state.lastAddedProductId,
+  selectItemByProduct: (productId: string) => (state: CartState) =>
+    state.getItem(productId),
+};
