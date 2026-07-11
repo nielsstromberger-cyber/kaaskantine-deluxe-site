@@ -2,11 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
+import { CartDrawer } from "./CartDrawer";
 import logo from "../assets/logo.jpg";
 
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/over-ons", label: "Over ons" },
+  { to: "/menu", label: "Menu" },
   { to: "/kaas", label: "Kaas" },
   { to: "/delicatessen", label: "Delicatessen" },
   { to: "/broodjes", label: "Broodjes" },
