@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OverOnsRouteImport } from './routes/over-ons'
+import { Route as MenuRouteImport } from './routes/menu'
 import { Route as KaasRouteImport } from './routes/kaas'
 import { Route as DelicatessenRouteImport } from './routes/delicatessen'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const OverOnsRoute = OverOnsRouteImport.update({
   id: '/over-ons',
   path: '/over-ons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KaasRoute = KaasRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/delicatessen': typeof DelicatessenRoute
   '/kaas': typeof KaasRoute
+  '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/delicatessen': typeof DelicatessenRoute
   '/kaas': typeof KaasRoute
+  '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/delicatessen': typeof DelicatessenRoute
   '/kaas': typeof KaasRoute
+  '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/delicatessen'
     | '/kaas'
+    | '/menu'
     | '/over-ons'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/delicatessen'
     | '/kaas'
+    | '/menu'
     | '/over-ons'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/delicatessen'
     | '/kaas'
+    | '/menu'
     | '/over-ons'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DelicatessenRoute: typeof DelicatessenRoute
   KaasRoute: typeof KaasRoute
+  MenuRoute: typeof MenuRoute
   OverOnsRoute: typeof OverOnsRoute
 }
 
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/over-ons'
       fullPath: '/over-ons'
       preLoaderRoute: typeof OverOnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kaas': {
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DelicatessenRoute: DelicatessenRoute,
   KaasRoute: KaasRoute,
+  MenuRoute: MenuRoute,
   OverOnsRoute: OverOnsRoute,
 }
 export const routeTree = rootRouteImport
