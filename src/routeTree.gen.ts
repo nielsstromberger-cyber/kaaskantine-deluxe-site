@@ -18,6 +18,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BroodjesRouteImport } from './routes/broodjes'
 import { Route as BorrelplankenRouteImport } from './routes/borrelplanken'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BestellingIdRouteImport } from './routes/bestelling.$id'
 
 const OverOnsRoute = OverOnsRouteImport.update({
   id: '/over-ons',
@@ -64,6 +65,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BestellingIdRoute = BestellingIdRouteImport.update({
+  id: '/bestelling/$id',
+  path: '/bestelling/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/kaas': typeof KaasRoute
   '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/bestelling/$id': typeof BestellingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/kaas': typeof KaasRoute
   '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/bestelling/$id': typeof BestellingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/kaas': typeof KaasRoute
   '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/bestelling/$id': typeof BestellingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/kaas'
     | '/menu'
     | '/over-ons'
+    | '/bestelling/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/kaas'
     | '/menu'
     | '/over-ons'
+    | '/bestelling/$id'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/kaas'
     | '/menu'
     | '/over-ons'
+    | '/bestelling/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +157,7 @@ export interface RootRouteChildren {
   KaasRoute: typeof KaasRoute
   MenuRoute: typeof MenuRoute
   OverOnsRoute: typeof OverOnsRoute
+  BestellingIdRoute: typeof BestellingIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bestelling/$id': {
+      id: '/bestelling/$id'
+      path: '/bestelling/$id'
+      fullPath: '/bestelling/$id'
+      preLoaderRoute: typeof BestellingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +245,7 @@ const rootRouteChildren: RootRouteChildren = {
   KaasRoute: KaasRoute,
   MenuRoute: MenuRoute,
   OverOnsRoute: OverOnsRoute,
+  BestellingIdRoute: BestellingIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
