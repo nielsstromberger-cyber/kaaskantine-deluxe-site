@@ -12,11 +12,12 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 const STATUSES = [
   { key: "nieuw", label: "Nieuw" },
-  { key: "in_bereiding", label: "In bereiding" },
+  { key: "bereiding", label: "In bereiding" },
   { key: "gereed", label: "Gereed" },
-  { key: "afgehaald", label: "Afgehaald" },
+  { key: "afgeleverd", label: "Afgehaald" },
   { key: "geannuleerd", label: "Geannuleerd" },
 ] as const;
+type OrderStatus = (typeof STATUSES)[number]["key"];
 
 type OrderRow = {
   id: string;
