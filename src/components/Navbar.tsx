@@ -97,7 +97,7 @@ export function Navbar() {
                 ))}
               </ul>
               <Link
-                to="/contact"
+                to="/menu"
                 onClick={() => setOpen(false)}
                 className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--brand-gold)] px-5 py-3 text-base font-semibold text-primary shadow-sm"
               >
