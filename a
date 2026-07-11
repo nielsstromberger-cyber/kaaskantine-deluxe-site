@@ -1,0 +1,329 @@
+/* ============================================
+   src/config/navigation.ts
+   ============================================ */
+
+import type { LinkProps } from "@tanstack/react-router";
+
+export type NavItem = {
+  to: LinkProps["to"];
+  label: string;
+  description?: string;
+};
+
+/**
+ * Main navigation items
+ * Centralized configuration for navigation across the app
+ */
+export const MAIN_NAVIGATION: NavItem[] = [
+  { to: "/", label: "Home", description: "Terug naar startpagina" },
+  { to: "/over-ons", label: "Over ons", description: "Leer meer over De Kaaskantine" },
+  { to: "/menu", label: "Menu", description: "Bekijk het volledige menu" },
+  { to: "/kaas", label: "Kaas", description: "Hollandse kazen" },
+  { to: "/delicatessen", label: "Delicatessen", description: "Delicatessen en specialiteiten" },
+  { to: "/broodjes", label: "Broodjes", description: "Verse broodjes" },
+  { to: "/borrelplanken", label: "Borrelplanken", description: "Borrelplanken" },
+  { to: "/contact", label: "Contact", description: "Contacteer ons" },
+] as const;
+
+/**
+ * Call-to-action buttons configuration
+ */
+export const CTA_BUTTONS = {
+  primary: {
+    to: "/menu" as const,
+    label: "Bestellen",
+    description: "Start je bestelling",
+  },
+  secondary: {
+    to: "/contact" as const,
+    label: "Contacteer ons",
+    description: "Neem contact op",
+  },
+} as const;
+
+/**
+ * Footer links configuration
+ */
+export const FOOTER_LINKS = {
+  shop: [
+    { to: "/kaas", label: "Kaas" },
+    { to: "/delicatessen", label: "Delicatessen" },
+    { to: "/broodjes", label: "Broodjes" },
+    { to: "/borrelplanken", label: "Borrelplanken" },
+  ] as const,
+  company: [
+    { to: "/over-ons", label: "Over ons" },
+    { to: "/contact", label: "Contact" },
+  ] as const,
+  legal: [
+    { to: "/privacy", label: "Privacy Policy" },
+    { to: "/terms", label: "Terms of Service" },
+  ] as const,
+} as const;
+
+/* ============================================
+   src/config/product-categories.ts
+   ============================================ */
+
+import type { ProductCategory } from "@/types/products";
+
+export type CategoryConfig = {
+  id: ProductCategory;
+  label: string;
+  title: string;
+  description: string;
+  slug: string;
+};
+
+export const PRODUCT_CATEGORIES: Record<ProductCategory, CategoryConfig> = {
+  kaas: {
+    id: "kaas",
+    label: "Kaas",
+    title: "Hollandse Kaas",
+    description: "Van jonge tot oude kaas, boerenkaas en bijzondere specialiteiten.",
+    slug: "kaas",
+  },
+  delicatessen: {
+    id: "delicatessen",
+    label: "Delicatessen",
+    title: "Delicatessen",
+    description: "Olijven, tapenades, noten, sauzen, crackers en meer.",
+    slug: "delicatessen",
+  },
+  vleeswaren: {
+    id: "vleeswaren",
+    label: "Vleeswaren",
+    title: "Vleeswaren",
+    description: "Vers gesneden vleeswaren van hoge kwaliteit.",
+    slug: "vleeswaren",
+  },
+  broodjes: {
+    id: "broodjes",
+    label: "Broodjes",
+    title: "Verse Broodjes",
+    description: "Rijk belegde broodjes met verse ingrediënten.",
+    slug: "broodjes",
+  },
+  borrelplanken: {
+    id: "borrelplanken",
+    label: "Borrelplanken",
+    title: "Borrelplanken",
+    description: "Luxe samengestelde borrelplanken voor iedere gelegenheid.",
+    slug: "borrelplanken",
+  },
+} as const;
+
+/* ============================================
+   src/config/app.ts
+   ============================================ */
+
+export const APP_CONFIG = {
+  name: "De Kaaskantine",
+  description:
+    "Ambachtelijke kazen, delicatessen en vers belegde broodjes in hartje Alkmaar.",
+  shortDescription: "Ambachtelijke kaas & delicatessen in Alkmaar",
+  url: "https://kaaskantine.nl",
+  locale: "nl-NL",
+  email: "info@kaaskantine.nl",
+  phone: "+31...",
+  address: {
+    street: "...",
+    city: "Alkmaar",
+    postalCode: "1600",
+    country: "Netherlands",
+    countryCode: "NL",
+  },
+  social: {
+    instagram: "https://instagram.com/kaaskantine",
+    facebook: "https://facebook.com/kaaskantine",
+    google: "https://google.com/maps/...",
+  },
+  business: {
+    rating: 4.9,
+    reviewCount: 150,
+    currency: "EUR",
+    timezone: "Europe/Amsterdam",
+  },
+} as const;
+
+/* ============================================
+   src/hooks/use-scroll.ts
+   ============================================ */
+
+import { useEffect, useState, useCallback, useRef } from "react";
+
+/**
+ * Custom hook to detect scroll position
+ * Useful for sticky headers that need to change appearance on scroll
+ *
+ * @param threshold - Scroll position threshold in pixels (default: 0)
+ * @returns boolean indicating if scrolled past threshold
+ *
+ * @example
+ * const scrolled = useScroll(12);
+ * // Returns true when window.scrollY > 12
+ */
+export function useScroll(threshold: number = 0): boolean {
+  const [scrolled, setScrolled] = useState(false);
+  const requestIdRef = useRef<number | null>(null);
+
+  const handleScroll = useCallback(() => {
+    setScrolled(window.scrollY > threshold);
+  }, [threshold]);
+
+  useEffect(() => {
+    // Check initial state
+    handleScroll();
+
+    // Use RAF for better performance
+    const onScroll = () => {
+      if (requestIdRef.current !== null) {
+        cancelAnimationFrame(requestIdRef.current);
+      }
+      requestIdRef.current = requestAnimationFrame(handleScroll);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (requestIdRef.current !== null) {
+        cancelAnimationFrame(requestIdRef.current);
+      }
+    };
+  }, [handleScroll]);
+
+  return scrolled;
+}
+
+/* ============================================
+   src/hooks/use-local-storage.ts
+   ============================================ */
+
+import { useState, useEffect, useCallback } from "react";
+
+/**
+ * Custom hook for localStorage with type safety
+ *
+ * @param key - localStorage key
+ * @param initialValue - Initial value if key doesn't exist
+ * @returns [value, setValue] tuple
+ *
+ * @example
+ * const [count, setCount] = useLocalStorage<number>("count", 0);
+ */
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+): [T, (value: T | ((val: T) => T)) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+      return item ? (JSON.parse(item) as T) : initialValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return initialValue;
+    }
+  });
+
+  const setValue = useCallback(
+    (value: T | ((val: T) => T)) => {
+      try {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+      } catch (error) {
+        console.error(`Error setting localStorage key "${key}":`, error);
+      }
+    },
+    [key, storedValue],
+  );
+
+  return [storedValue, setValue];
+}
+
+/* ============================================
+   src/hooks/use-debounce.ts
+   ============================================ */
+
+import { useEffect, useState } from "react";
+
+/**
+ * Custom hook for debouncing values
+ * Useful for search inputs, resize listeners, etc.
+ *
+ * @param value - Value to debounce
+ * @param delay - Delay in milliseconds (default: 500)
+ * @returns Debounced value
+ *
+ * @example
+ * const [searchTerm, setSearchTerm] = useState("");
+ * const debouncedSearchTerm = useDebounce(searchTerm, 300);
+ */
+export function useDebounce<T>(value: T, delay: number = 500): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+/* ============================================
+   src/hooks/use-intersection-observer.ts
+   ============================================ */
+
+import { useEffect, useRef, useState } from "react";
+
+interface UseIntersectionObserverOptions extends IntersectionObserverInit {
+  once?: boolean;
+}
+
+/**
+ * Custom hook for intersection observer (lazy loading, reveal animations)
+ *
+ * @param options - IntersectionObserver options
+ * @returns [ref, isVisible] tuple
+ *
+ * @example
+ * const [ref, isVisible] = useIntersectionObserver({ threshold: 0.5 });
+ * <div ref={ref} className={isVisible ? "visible" : "hidden"} />
+ */
+export function useIntersectionObserver(
+  options: UseIntersectionObserverOptions = {},
+): [React.RefObject<HTMLDivElement>, boolean] {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const hasTriggered = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        hasTriggered.current = true;
+
+        if (options.once) {
+          observer.unobserve(entry.target);
+        }
+      } else if (!options.once) {
+        setIsVisible(false);
+      }
+    }, options);
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, isVisible];
+}
