@@ -45,6 +45,7 @@ function ProductsPage() {
 
   const upsert = useMutation({
     mutationFn: async (p: Partial<Product> & { id?: string }) => {
+      if (!p.name || !p.category_id) throw new Error("Naam en categorie zijn verplicht");
       const payload = {
         name: p.name,
         description: p.description ?? null,

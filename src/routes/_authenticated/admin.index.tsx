@@ -114,7 +114,7 @@ function AdminHome() {
                   <XAxis dataKey="day" fontSize={11} />
                   <YAxis fontSize={11} />
                   <Tooltip
-                    formatter={(v: number) => `€${v.toFixed(2)}`}
+                    formatter={(v) => `€${Number(v).toFixed(2)}`}
                     contentStyle={{ borderRadius: 8, fontSize: 12 }}
                   />
                   <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />

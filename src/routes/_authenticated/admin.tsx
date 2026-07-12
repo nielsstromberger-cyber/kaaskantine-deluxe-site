@@ -26,14 +26,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/admin", label: "Overzicht", icon: LayoutDashboard, exact: true },
   { to: "/admin/orders", label: "Bestellingen", icon: ShoppingBag },
   { to: "/admin/reservations", label: "Reserveringen", icon: CalendarClock },
   { to: "/admin/products", label: "Producten", icon: Package },
   { to: "/admin/users", label: "Gebruikers", icon: Users },
   { to: "/admin/settings", label: "Instellingen", icon: Settings },
-] as const;
+];
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
