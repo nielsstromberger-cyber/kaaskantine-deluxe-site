@@ -130,12 +130,10 @@ function CheckoutPage() {
     setErrors({});
     setSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       // Insert order
       const { data: order, error: orderErr } = await supabase
         .from("orders")
         .insert({
-          user_id: user?.id ?? null,
           customer_name: parsed.data.name,
           customer_email: parsed.data.email,
           customer_phone: parsed.data.phone,
