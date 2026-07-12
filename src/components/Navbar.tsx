@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { NavLink, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Menu, User as UserIcon } from "lucide-react";
 import {
@@ -38,6 +38,18 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+      isActive ? "text-primary" : "text-foreground/80 hover:text-primary"
+    }`;
+
+  const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `block rounded-xl px-4 py-3 text-lg font-medium transition-colors ${
+      isActive
+        ? "bg-secondary text-primary"
+        : "text-foreground/90 hover:bg-secondary hover:text-primary"
+    }`;
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
@@ -64,14 +76,9 @@ export function Navbar() {
         <ul className="hidden items-center gap-1 lg:flex">
           {NAV.map((item) => (
             <li key={item.to}>
-              <Link
-                to={item.to}
-                className="rounded-full px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-                activeProps={{ className: "text-primary", "aria-current": "page" }}
-                activeOptions={{ exact: item.to === "/" }}
-              >
+              <NavLink to={item.to} end={item.to === "/"} className={navLinkClass}>
                 {item.label}
-              </Link>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -109,15 +116,14 @@ export function Navbar() {
               <ul className="mt-8 flex flex-col gap-1">
                 {NAV.map((item) => (
                   <li key={item.to}>
-                    <Link
+                    <NavLink
                       to={item.to}
+                      end={item.to === "/"}
                       onClick={() => setOpen(false)}
-                      className="block rounded-xl px-4 py-3 text-lg font-medium text-foreground/90 transition-colors hover:bg-secondary hover:text-primary"
-                      activeProps={{ className: "bg-secondary text-primary", "aria-current": "page" }}
-                      activeOptions={{ exact: item.to === "/" }}
+                      className={mobileNavLinkClass}
                     >
                       {item.label}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
               </ul>
