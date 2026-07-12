@@ -1,153 +1,42 @@
-import { Link, useLocation } from "react-router-dom";
-import { Menu, User as UserIcon, X } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
-import { CartDrawer } from "./CartDrawer";
+import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Menu, User as UserIcon } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { CartDrawer } from "@/components/CartDrawer";
 import { useAuthUser } from "@/lib/use-auth";
-import { MAIN_NAVIGATION, QUICK_LINKS, isRouteActive } from "@/config/navigation";
-import { useScroll, useToggle } from "@/hooks/custom-hooks";
-import logo from "../assets/logo.jpg";
+import logo from "@/assets/logo.jpg";
 
-/**
- * Logo component extracted for reusability
- */
-const NavLogo = () => (
-  <Link
-    to="/"
-    className="flex items-center gap-2 group"
-    aria-label="De Kaaskantine home"
-  >
-    <img
-      src={logo}
-      alt="De Kaaskantine logo"
-      className="h-10 w-10 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-border transition-transform group-hover:scale-105"
-      loading="lazy"
-      width={40}
-      height={40}
-    />
-    <span className="font-display text-lg font-semibold tracking-tight text-primary sm:text-xl">
-      De Kaaskantine
-    </span>
-  </Link>
-);
+const NAV = [
+  { to: "/", label: "Home" },
+  { to: "/over-ons", label: "Over ons" },
+  { to: "/menu", label: "Menu" },
+  { to: "/kaas", label: "Kaas" },
+  { to: "/delicatessen", label: "Delicatessen" },
+  { to: "/broodjes", label: "Broodjes" },
+  { to: "/borrelplanken", label: "Borrelplanken" },
+  { to: "/contact", label: "Contact" },
+] as const;
 
-/**
- * Desktop navigation component
- */
-const DesktopNav = ({ currentLocation }: { currentLocation: string }) => (
-  <ul className="hidden items-center gap-1 lg:flex" role="menubar">
-    {MAIN_NAVIGATION.map((item) => {
-      const active = isRouteActive(item.to, currentLocation);
-      return (
-        <li key={item.to} role="none">
-          <Link
-            to={item.to}
-            className={`rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-              active ? "text-primary font-semibold" : "text-foreground/80"
-            }`}
-            title={item.description}
-            role="menuitem"
-            aria-current={active ? "page" : undefined}
-          >
-            {item.label}
-          </Link>
-        </li>
-      );
-    })}
-  </ul>
-);
-
-/**
- * Navigation actions component
- */
-const NavActions = ({ user }: { user: any }) => (
-  <div className="flex items-center gap-2">
-    <Link
-      to="/menu"
-      className="hidden rounded-full bg-[var(--brand-gold)] px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:bg-[var(--brand-gold-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-gold)] focus:ring-offset-2 sm:inline-flex"
-      aria-label="Ga naar menu om te bestellen"
-    >
-      Bestellen
-    </Link>
-
-    <Link
-      to={user ? "/account" : "/auth"}
-      className="grid h-11 w-11 place-items-center rounded-full border border-border bg-background text-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-      aria-label={user ? "Mijn account" : "Inloggen"}
-    >
-      <UserIcon className="h-5 w-5" />
-    </Link>
-
-    <CartDrawer />
-  </div>
-);
-
-/**
- * Mobile menu content
- */
-const MobileMenuContent = ({
-  onClose,
-  currentLocation,
-}: {
-  onClose: () => void;
-  currentLocation: string;
-}) => (
-  <SheetContent side="right" className="w-full max-w-sm bg-background p-6">
-    <div className="flex items-center justify-between mb-6">
-      <SheetTitle className="font-display text-2xl text-primary">Menu</SheetTitle>
-    </div>
-
-    {/* Main navigation for mobile */}
-    <ul className="flex flex-col gap-1" role="navigation">
-      {MAIN_NAVIGATION.map((item) => {
-        const active = isRouteActive(item.to, currentLocation);
-        return (
-          <li key={item.to}>
-            <Link
-              to={item.to}
-              onClick={onClose}
-              className={`block rounded-xl px-4 py-3 text-lg font-medium transition-colors hover:bg-secondary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                active ? "bg-secondary text-primary font-semibold" : "text-foreground/90"
-              }`}
-              title={item.description}
-              aria-current={active ? "page" : undefined}
-            >
-              {item.label}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
-
-    {/* Quick actions */}
-    <div className="mt-8 pt-6 border-t border-border">
-      <p className="text-sm font-medium text-foreground/60 mb-4">Snelle acties</p>
-      <Link
-        to="/menu"
-        onClick={onClose}
-        className="mb-2 inline-flex w-full items-center justify-center rounded-full bg-[var(--brand-gold)] px-5 py-3 text-base font-semibold text-primary shadow-sm hover:shadow-md hover:bg-[var(--brand-gold-soft)] transition-all"
-      >
-        Bestellen
-      </Link>
-
-      <Link
-        to="/reserveren"
-        onClick={onClose}
-        className="inline-flex w-full items-center justify-center rounded-full border border-primary px-5 py-3 text-base font-semibold text-primary hover:bg-secondary transition-colors"
-      >
-        Reserveren
-      </Link>
-    </div>
-  </SheetContent>
-);
-
-/**
- * Main Navbar component
- */
 export function Navbar() {
-  const scrolled = useScroll(12);
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   const { user } = useAuthUser();
-  const location = useLocation();
-  const [mobileMenuOpen, , openMobileMenu, closeMobileMenu] = useToggle(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const isScrolled = window.scrollY > 12;
+      setScrolled((prev) => (prev === isScrolled ? prev : isScrolled));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <header
@@ -156,52 +45,93 @@ export function Navbar() {
           ? "border-b border-border/60 bg-background/85 backdrop-blur-xl shadow-sm"
           : "bg-background/40 backdrop-blur-sm"
       }`}
-      role="banner"
     >
-      <nav
-        className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
-        role="navigation"
-        aria-label="Hoofdnavigatie"
-      >
-        {/* Logo */}
-        <NavLogo />
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex items-center gap-2 group" aria-label="De Kaaskantine home">
+          <img
+            src={logo}
+            alt="De Kaaskantine logo"
+            width={40}
+            height={40}
+            decoding="async"
+            className="h-10 w-10 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-border transition-transform group-hover:scale-105"
+          />
+          <span className="font-display text-lg font-semibold tracking-tight text-primary sm:text-xl">
+            De Kaaskantine
+          </span>
+        </Link>
 
-        {/* Desktop Navigation */}
-        <DesktopNav currentLocation={location.pathname} />
+        <ul className="hidden items-center gap-1 lg:flex">
+          {NAV.map((item) => (
+            <li key={item.to}>
+              <Link
+                to={item.to}
+                className="rounded-full px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+                activeProps={{ className: "text-primary", "aria-current": "page" }}
+                activeOptions={{ exact: item.to === "/" }}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-        {/* Actions + Mobile Menu */}
         <div className="flex items-center gap-2">
-          <NavActions user={user} />
-
-          {/* Mobile Menu Trigger */}
-          <Sheet
-            open={mobileMenuOpen}
-            onOpenChange={(open) => {
-              if (open) openMobileMenu();
-              else closeMobileMenu();
-            }}
+          <Link
+            to="/menu"
+            className="hidden rounded-full bg-[var(--brand-gold)] px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:bg-[var(--brand-gold-soft)] sm:inline-flex"
           >
+            Bestellen
+          </Link>
+
+          <Link
+            to={user ? "/account" : "/auth"}
+            className="grid h-11 w-11 place-items-center rounded-full border border-border bg-background text-primary hover:bg-secondary"
+            aria-label={user ? "Mijn account" : "Inloggen"}
+          >
+            <UserIcon className="h-5 w-5" />
+          </Link>
+
+          <CartDrawer />
+
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              className="grid h-11 w-11 place-items-center rounded-full border border-border bg-background text-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors lg:hidden"
-              aria-label="Open navigatiemenu"
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-menu"
+              className="grid h-11 w-11 place-items-center rounded-full border border-border bg-background text-primary lg:hidden"
+              aria-label="Open menu"
             >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              <Menu className="h-5 w-5" />
             </SheetTrigger>
-            <MobileMenuContent
-              onClose={closeMobileMenu}
-              currentLocation={location.pathname}
-            />
+            <SheetContent side="right" className="w-full max-w-sm bg-background p-6">
+              <SheetTitle className="font-display text-2xl text-primary">Menu</SheetTitle>
+              <SheetDescription className="sr-only">
+                Navigatiemenu voor De Kaaskantine
+              </SheetDescription>
+              <ul className="mt-8 flex flex-col gap-1">
+                {NAV.map((item) => (
+                  <li key={item.to}>
+                    <Link
+                      to={item.to}
+                      onClick={() => setOpen(false)}
+                      className="block rounded-xl px-4 py-3 text-lg font-medium text-foreground/90 transition-colors hover:bg-secondary hover:text-primary"
+                      activeProps={{ className: "bg-secondary text-primary", "aria-current": "page" }}
+                      activeOptions={{ exact: item.to === "/" }}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/menu"
+                onClick={() => setOpen(false)}
+                className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--brand-gold)] px-5 py-3 text-base font-semibold text-primary shadow-sm"
+              >
+                Bestellen
+              </Link>
+            </SheetContent>
           </Sheet>
         </div>
       </nav>
     </header>
   );
 }
-
-export default Navbar;
