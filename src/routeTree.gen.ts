@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ReserverenRouteImport } from './routes/reserveren'
 import { Route as OverOnsRouteImport } from './routes/over-ons'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as KaasRouteImport } from './routes/kaas'
@@ -22,7 +24,18 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BestellingIdRouteImport } from './routes/bestelling.$id'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserverenRoute = ReserverenRouteImport.update({
+  id: '/reserveren',
+  path: '/reserveren',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OverOnsRoute = OverOnsRouteImport.update({
   id: '/over-ons',
   path: '/over-ons',
@@ -87,6 +100,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -99,6 +117,9 @@ export interface FileRoutesByFullPath {
   '/kaas': typeof KaasRoute
   '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/reserveren': typeof ReserverenRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/bestelling/$id': typeof BestellingIdRoute
 }
@@ -113,6 +134,9 @@ export interface FileRoutesByTo {
   '/kaas': typeof KaasRoute
   '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/reserveren': typeof ReserverenRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/bestelling/$id': typeof BestellingIdRoute
 }
@@ -129,6 +153,9 @@ export interface FileRoutesById {
   '/kaas': typeof KaasRoute
   '/menu': typeof MenuRoute
   '/over-ons': typeof OverOnsRoute
+  '/reserveren': typeof ReserverenRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/bestelling/$id': typeof BestellingIdRoute
 }
@@ -145,6 +172,9 @@ export interface FileRouteTypes {
     | '/kaas'
     | '/menu'
     | '/over-ons'
+    | '/reserveren'
+    | '/reset-password'
+    | '/account'
     | '/admin'
     | '/bestelling/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -159,6 +189,9 @@ export interface FileRouteTypes {
     | '/kaas'
     | '/menu'
     | '/over-ons'
+    | '/reserveren'
+    | '/reset-password'
+    | '/account'
     | '/admin'
     | '/bestelling/$id'
   id:
@@ -174,6 +207,9 @@ export interface FileRouteTypes {
     | '/kaas'
     | '/menu'
     | '/over-ons'
+    | '/reserveren'
+    | '/reset-password'
+    | '/_authenticated/account'
     | '/_authenticated/admin'
     | '/bestelling/$id'
   fileRoutesById: FileRoutesById
@@ -190,11 +226,27 @@ export interface RootRouteChildren {
   KaasRoute: typeof KaasRoute
   MenuRoute: typeof MenuRoute
   OverOnsRoute: typeof OverOnsRoute
+  ReserverenRoute: typeof ReserverenRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   BestellingIdRoute: typeof BestellingIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserveren': {
+      id: '/reserveren'
+      path: '/reserveren'
+      fullPath: '/reserveren'
+      preLoaderRoute: typeof ReserverenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/over-ons': {
       id: '/over-ons'
       path: '/over-ons'
@@ -286,14 +338,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
 }
 
@@ -312,6 +373,8 @@ const rootRouteChildren: RootRouteChildren = {
   KaasRoute: KaasRoute,
   MenuRoute: MenuRoute,
   OverOnsRoute: OverOnsRoute,
+  ReserverenRoute: ReserverenRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   BestellingIdRoute: BestellingIdRoute,
 }
 export const routeTree = rootRouteImport
