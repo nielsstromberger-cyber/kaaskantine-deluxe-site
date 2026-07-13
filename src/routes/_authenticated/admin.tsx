@@ -583,7 +583,7 @@ function ProductsView() {
 
   const update = useMutation({
     mutationFn: async (v: { id: string; is_available?: boolean; price_cents?: number }) => {
-      const patch: Record<string, unknown> = {};
+      const patch: { is_available?: boolean; price_cents?: number } = {};
       if (v.is_available !== undefined) patch.is_available = v.is_available;
       if (v.price_cents !== undefined) patch.price_cents = v.price_cents;
       const { error } = await supabase.from("products").update(patch).eq("id", v.id);
