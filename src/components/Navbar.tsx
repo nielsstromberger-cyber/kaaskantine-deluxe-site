@@ -1,9 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, User as UserIcon } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
 import { CartDrawer } from "./CartDrawer";
-import { useAuthUser } from "@/lib/use-auth";
 import logo from "../assets/logo.jpg";
 
 const NAV = [
@@ -20,7 +19,6 @@ const NAV = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { user } = useAuthUser();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -70,14 +68,6 @@ export function Navbar() {
             className="hidden rounded-full bg-[var(--brand-gold)] px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:bg-[var(--brand-gold-soft)] sm:inline-flex"
           >
             Bestellen
-          </Link>
-
-          <Link
-            to={user ? "/account" : "/auth"}
-            className="grid h-11 w-11 place-items-center rounded-full border border-border bg-background text-primary hover:bg-secondary"
-            aria-label={user ? "Mijn account" : "Inloggen"}
-          >
-            <UserIcon className="h-5 w-5" />
           </Link>
 
           <CartDrawer />

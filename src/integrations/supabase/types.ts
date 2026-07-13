@@ -182,7 +182,6 @@ export type Database = {
           subtotal_cents: number
           total_cents: number
           updated_at: string
-          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -201,7 +200,6 @@ export type Database = {
           subtotal_cents: number
           total_cents: number
           updated_at?: string
-          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -220,7 +218,6 @@ export type Database = {
           subtotal_cents?: number
           total_cents?: number
           updated_at?: string
-          user_id?: string | null
         }
         Relationships: []
       }
@@ -273,72 +270,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      profiles: {
-        Row: {
-          created_at: string
-          full_name: string | null
-          id: string
-          phone: string | null
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          full_name?: string | null
-          id: string
-          phone?: string | null
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      reservations: {
-        Row: {
-          created_at: string
-          customer_email: string
-          customer_name: string
-          customer_phone: string
-          id: string
-          notes: string | null
-          party_size: number
-          pickup_at: string
-          status: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          customer_email: string
-          customer_name: string
-          customer_phone: string
-          id?: string
-          notes?: string | null
-          party_size?: number
-          pickup_at: string
-          status?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          customer_email?: string
-          customer_name?: string
-          customer_phone?: string
-          id?: string
-          notes?: string | null
-          party_size?: number
-          pickup_at?: string
-          status?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
       }
       user_roles: {
         Row: {
