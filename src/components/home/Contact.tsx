@@ -3,11 +3,12 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { MapPin, Phone, Clock } from "lucide-react";
 import { SectionReveal } from "../SectionReveal";
+import { supabase } from "@/integrations/supabase/client";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Vul je naam in").max(100),
   email: z.string().trim().email("Ongeldig e-mailadres").max(255),
-  message: z.string().trim().min(1, "Bericht mag niet leeg zijn").max(1000),
+  message: z.string().trim().min(1, "Bericht mag niet leeg zijn").max(5000),
 });
 
 const HOURS = [
@@ -20,9 +21,10 @@ const HOURS = [
 export function Contact() {
   const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const result = schema.safeParse({
       name: fd.get("name"),
       email: fd.get("email"),
@@ -33,11 +35,18 @@ export function Contact() {
       return;
     }
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      toast.success("Bedankt! We nemen zo snel mogelijk contact op.");
-      e.currentTarget?.reset();
-    }, 700);
+    const { error } = await supabase.from("contact_messages").insert({
+      name: result.data.name,
+      email: result.data.email,
+      message: result.data.message,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Kon bericht niet versturen. Probeer opnieuw.");
+      return;
+    }
+    toast.success("Bedankt! We nemen zo snel mogelijk contact op.");
+    form.reset();
   }
 
   return (
