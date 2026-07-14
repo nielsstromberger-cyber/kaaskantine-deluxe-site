@@ -130,42 +130,27 @@ function CheckoutPage() {
     setErrors({});
     setSubmitting(true);
     try {
-      // Insert order
-      const { data: order, error: orderErr } = await supabase
-        .from("orders")
-        .insert({
-          customer_name: parsed.data.name,
-          customer_email: parsed.data.email,
-          customer_phone: parsed.data.phone,
-          pickup_time: new Date(parsed.data.pickup_time).toISOString(),
-          notes: parsed.data.notes || null,
-          subtotal_cents: subtotal,
-          discount_cents: discount?.cents ?? 0,
-          total_cents: total,
-          discount_code: discount?.code ?? null,
-          status: "nieuw",
-          payment_status: "pending",
-        })
-        .select("id, order_number")
-        .single();
-      if (orderErr) throw orderErr;
-
-      // Insert items
-      const { error: itemsErr } = await supabase.from("order_items").insert(
-        items.map((i) => ({
-          order_id: order.id,
+      const { data, error } = await supabase.rpc("place_order", {
+        _customer_name: parsed.data.name,
+        _customer_email: parsed.data.email,
+        _customer_phone: parsed.data.phone,
+        _pickup_time: new Date(parsed.data.pickup_time).toISOString(),
+        _notes: parsed.data.notes || "",
+        _discount_code: discount?.code ?? "",
+        _items: items.map((i) => ({
           product_id: i.productId,
-          product_name: i.name,
           quantity: i.quantity,
-          unit_price_cents: i.priceCents,
-          line_total_cents: i.priceCents * i.quantity,
           notes: i.notes ?? null,
         })),
-      );
-      if (itemsErr) throw itemsErr;
-
+      });
+      if (error) throw error;
+      const order = data as { id: string; access_token: string };
       clear();
-      navigate({ to: "/bestelling/$id", params: { id: order.id } });
+      navigate({
+        to: "/bestelling/$id",
+        params: { id: order.id },
+        search: { t: order.access_token },
+      });
     } catch (e) {
       console.error(e);
       toast.error("Er ging iets mis bij het plaatsen van je bestelling. Probeer opnieuw.");

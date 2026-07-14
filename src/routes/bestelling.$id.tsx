@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, Clock, MapPin, Mail, Phone } from "lucide-react";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { formatEUR } from "@/lib/cart-store";
 
+const searchSchema = z.object({ t: z.string().optional() });
+
 export const Route = createFileRoute("/bestelling/$id")({
+  validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
       { title: "Bestelling bevestigd — De Kaaskantine" },
@@ -14,25 +18,35 @@ export const Route = createFileRoute("/bestelling/$id")({
   component: OrderConfirmation,
 });
 
-async function fetchOrder(id: string) {
-  // Public read via order id (no admin needed — RLS blocks SELECT for public, so this only works
-  // with a workaround: we fetch via a public function that filters by id from the URL).
-  // Simpler: RLS currently only allows admins to SELECT orders. We'll use a public endpoint later.
-  // For now, we render the confirmation from localStorage-cached data + a minimal DB read via RPC.
-  // Fallback: attempt select — will return null for anon.
-  const { data } = await supabase
-    .from("orders")
-    .select("id, order_number, customer_name, customer_email, pickup_time, total_cents, subtotal_cents, discount_cents, discount_code, status")
-    .eq("id", id)
-    .maybeSingle();
-  return data;
+type OrderData = {
+  id: string;
+  order_number: number;
+  customer_name: string;
+  customer_email: string;
+  pickup_time: string;
+  subtotal_cents: number;
+  discount_cents: number;
+  total_cents: number;
+  discount_code: string | null;
+  status: string;
+};
+
+async function fetchOrder(id: string, token: string | undefined): Promise<OrderData | null> {
+  if (!token) return null;
+  const { data, error } = await supabase.rpc("get_order_by_token", {
+    _id: id,
+    _token: token,
+  });
+  if (error || !data) return null;
+  return data as unknown as OrderData;
 }
 
 function OrderConfirmation() {
   const { id } = Route.useParams();
+  const { t } = Route.useSearch();
   const { data } = useQuery({
-    queryKey: ["order", id],
-    queryFn: () => fetchOrder(id),
+    queryKey: ["order", id, t],
+    queryFn: () => fetchOrder(id, t),
   });
 
   return (

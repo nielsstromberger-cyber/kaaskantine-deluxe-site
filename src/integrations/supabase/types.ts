@@ -202,6 +202,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          access_token: string
           created_at: string
           customer_email: string
           customer_name: string
@@ -221,6 +222,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          access_token?: string
           created_at?: string
           customer_email: string
           customer_name: string
@@ -240,6 +242,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          access_token?: string
           created_at?: string
           customer_email?: string
           customer_name?: string
@@ -402,14 +405,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
+      get_order_by_token: {
+        Args: { _id: string; _token: string }
+        Returns: Json
       }
-      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      place_order: {
+        Args: {
+          _customer_email: string
+          _customer_name: string
+          _customer_phone: string
+          _discount_code: string
+          _items: Json
+          _notes: string
+          _pickup_time: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "manager" | "employee"
