@@ -135,8 +135,8 @@ function CheckoutPage() {
         _customer_email: parsed.data.email,
         _customer_phone: parsed.data.phone,
         _pickup_time: new Date(parsed.data.pickup_time).toISOString(),
-        _notes: parsed.data.notes || null,
-        _discount_code: discount?.code ?? null,
+        _notes: parsed.data.notes || "",
+        _discount_code: discount?.code ?? "",
         _items: items.map((i) => ({
           product_id: i.productId,
           quantity: i.quantity,
