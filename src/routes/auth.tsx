@@ -11,16 +11,36 @@ export const Route = createFileRoute("/auth")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : "",
+  }),
   component: AuthPage,
 });
 
+// Only allow same-origin relative paths to prevent open-redirect abuse.
+function safeNext(next: string): string | null {
+  if (!next) return null;
+  if (!next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  const nextPath = safeNext(next);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const redirectAfterAuth = () => {
+    if (nextPath) {
+      window.location.href = nextPath;
+      return;
+    }
+    navigate({ to: "/admin" });
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,13 +50,13 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Ingelogd");
-        navigate({ to: "/admin" });
+        redirectAfterAuth();
       } else {
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/admin`,
+            emailRedirectTo: `${window.location.origin}${nextPath ?? "/admin"}`,
             data: { full_name: fullName },
           },
         });
@@ -55,10 +75,12 @@ function AuthPage() {
     <div className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-16">
       <div className="w-full rounded-3xl border border-border bg-card p-8 shadow-md">
         <h1 className="font-display text-3xl font-semibold text-primary">
-          {mode === "signin" ? "Beheerder inloggen" : "Account aanmaken"}
+          {mode === "signin" ? "Inloggen" : "Account aanmaken"}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Toegang voor personeel van De Kaaskantine.
+          {nextPath
+            ? "Log in om verder te gaan met de autorisatie."
+            : "Toegang voor personeel van De Kaaskantine."}
         </p>
         <form onSubmit={submit} className="mt-6 space-y-4">
           {mode === "signup" && (
