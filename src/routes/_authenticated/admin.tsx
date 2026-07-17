@@ -811,13 +811,13 @@ function OpeningHoursView() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (isLoading) return <p className="text-muted-foreground">Laden…</p>;
-
   const ordered = useMemo(() => {
-    // Show Monday first
     const order = [1, 2, 3, 4, 5, 6, 0];
     return order.map((d) => rows.find((r) => r.day_of_week === d)).filter(Boolean) as HourRow[];
   }, [rows]);
+
+  if (isLoading) return <p className="text-muted-foreground">Laden…</p>;
+
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
