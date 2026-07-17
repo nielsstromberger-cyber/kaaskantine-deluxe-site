@@ -66,10 +66,13 @@ function CheckoutPage() {
   const [validatingCode, setValidatingCode] = useState(false);
 
   // Initialize first day/slot when data arrives
-  const firstDay = availableDays[0];
-  if (firstDay && !form.pickup_date) {
-    setForm((f) => ({ ...f, pickup_date: firstDay.date, pickup_slot: firstDay.slots[0]?.value ?? "" }));
-  }
+  useEffect(() => {
+    const firstDay = availableDays[0];
+    if (firstDay && !form.pickup_date) {
+      setForm((f) => ({ ...f, pickup_date: firstDay.date, pickup_slot: firstDay.slots[0]?.value ?? "" }));
+    }
+  }, [availableDays, form.pickup_date]);
+
 
   const currentDay = availableDays.find((d) => d.date === form.pickup_date);
   const total = useMemo(
