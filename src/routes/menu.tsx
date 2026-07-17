@@ -13,6 +13,8 @@ type Product = {
   price_cents: number;
   image_url: string | null;
   category_id: string;
+  stock_quantity: number | null;
+  low_stock_threshold: number;
 };
 
 type Category = {
@@ -34,10 +36,11 @@ async function fetchMenu(): Promise<Category[]> {
 
   const { data: prods, error: prodErr } = await supabase
     .from("products")
-    .select("id, name, description, allergens, price_cents, image_url, category_id, sort_order")
+    .select("id, name, description, allergens, price_cents, image_url, category_id, sort_order, stock_quantity, low_stock_threshold")
     .eq("is_available", true)
     .order("sort_order");
   if (prodErr) throw prodErr;
+
 
   return (cats ?? []).map((c) => ({
     ...c,
