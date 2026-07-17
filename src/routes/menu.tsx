@@ -116,37 +116,52 @@ function MenuPage() {
               )}
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {cat.products.map((p) => (
-                <article
-                  key={p.id}
-                  className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
-                >
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <h3 className="font-display text-lg font-semibold text-primary">{p.name}</h3>
-                    <span className="shrink-0 font-display text-lg font-bold text-[var(--brand-gold)]">
-                      {formatEUR(p.price_cents)}
-                    </span>
-                  </div>
-                  {p.description && (
-                    <p className="mb-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                      {p.description}
-                    </p>
-                  )}
-                  {p.allergens && (
-                    <p className="mb-4 text-xs italic text-muted-foreground/80">
-                      Allergenen: {p.allergens}
-                    </p>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => onAdd(p)}
-                    className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md"
+              {cat.products.map((p) => {
+                const soldOut = p.stock_quantity !== null && p.stock_quantity <= 0;
+                const lowStock =
+                  p.stock_quantity !== null &&
+                  p.stock_quantity > 0 &&
+                  p.stock_quantity <= p.low_stock_threshold;
+                return (
+                  <article
+                    key={p.id}
+                    className={`group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all ${
+                      soldOut ? "opacity-70" : "hover:-translate-y-1 hover:shadow-md"
+                    }`}
                   >
-                    <Plus className="h-4 w-4" />
-                    Toevoegen
-                  </button>
-                </article>
-              ))}
+                    <div className="mb-3 flex items-start justify-between gap-3">
+                      <h3 className="font-display text-lg font-semibold text-primary">{p.name}</h3>
+                      <span className="shrink-0 font-display text-lg font-bold text-[var(--brand-gold)]">
+                        {formatEUR(p.price_cents)}
+                      </span>
+                    </div>
+                    {p.description && (
+                      <p className="mb-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                        {p.description}
+                      </p>
+                    )}
+                    {p.allergens && (
+                      <p className="mb-2 text-xs italic text-muted-foreground/80">
+                        Allergenen: {p.allergens}
+                      </p>
+                    )}
+                    {lowStock && (
+                      <p className="mb-3 text-xs font-medium text-[var(--brand-gold)]">
+                        Nog {p.stock_quantity} beschikbaar
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => onAdd(p)}
+                      disabled={soldOut}
+                      className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:hover:bg-muted"
+                    >
+                      {soldOut ? "Uitverkocht" : (<><Plus className="h-4 w-4" /> Toevoegen</>)}
+                    </button>
+                  </article>
+                );
+              })}
+
             </div>
           </div>
         ))}
