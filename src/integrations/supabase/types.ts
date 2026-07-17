@@ -53,6 +53,7 @@ export type Database = {
           message: string
           name: string
           phone: string | null
+          status: string
           subject: string | null
           updated_at: string
         }
@@ -64,6 +65,7 @@ export type Database = {
           message: string
           name: string
           phone?: string | null
+          status?: string
           subject?: string | null
           updated_at?: string
         }
@@ -75,10 +77,49 @@ export type Database = {
           message?: string
           name?: string
           phone?: string | null
+          status?: string
           subject?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      contact_replies: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          body: string
+          created_at: string
+          email_sent: boolean
+          id: string
+          message_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          body: string
+          created_at?: string
+          email_sent?: boolean
+          id?: string
+          message_id: string
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          email_sent?: boolean
+          id?: string
+          message_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_replies_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "contact_messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       discount_codes: {
         Row: {
@@ -203,6 +244,7 @@ export type Database = {
       orders: {
         Row: {
           access_token: string
+          archived_at: string | null
           created_at: string
           customer_email: string
           customer_name: string
@@ -223,6 +265,7 @@ export type Database = {
         }
         Insert: {
           access_token?: string
+          archived_at?: string | null
           created_at?: string
           customer_email: string
           customer_name: string
@@ -243,6 +286,7 @@ export type Database = {
         }
         Update: {
           access_token?: string
+          archived_at?: string | null
           created_at?: string
           customer_email?: string
           customer_name?: string
@@ -272,9 +316,11 @@ export type Database = {
           id: string
           image_url: string | null
           is_available: boolean
+          low_stock_threshold: number
           name: string
           price_cents: number
           sort_order: number
+          stock_quantity: number | null
           updated_at: string
         }
         Insert: {
@@ -285,9 +331,11 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_available?: boolean
+          low_stock_threshold?: number
           name: string
           price_cents: number
           sort_order?: number
+          stock_quantity?: number | null
           updated_at?: string
         }
         Update: {
@@ -298,9 +346,11 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_available?: boolean
+          low_stock_threshold?: number
           name?: string
           price_cents?: number
           sort_order?: number
+          stock_quantity?: number | null
           updated_at?: string
         }
         Relationships: [
@@ -431,6 +481,7 @@ export type Database = {
         | "onderweg"
         | "afgeleverd"
         | "geannuleerd"
+        | "voltooid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -566,6 +617,7 @@ export const Constants = {
         "onderweg",
         "afgeleverd",
         "geannuleerd",
+        "voltooid",
       ],
     },
   },
