@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertCircle, ArrowLeft, CalendarClock } from "lucide-react";
 import { z } from "zod";
